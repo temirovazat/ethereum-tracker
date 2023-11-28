@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: postgres_db
+    image: postgres
+    env_file:
+      - .env
+
+  app:
+    container_name: tracker_bot
+    build: .
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python -m app.main'
+    environment:
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
